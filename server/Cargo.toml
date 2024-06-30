@@ -1,0 +1,11 @@
+[package]
+name = "server"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bevy = "0.13.2"
+bevy_eventwork = { git = "https://github.com/NoahShomette/bevy_eventwork.git", branch = "dynamic_serialization" }
+bevy_eventwork_mod_websockets = { git = "https://github.com/NoahShomette/bevy_eventwork_mod_websockets.git", branch = "dynamic_serialization" }
+serde = "1.0.203"
+serde_json = "1.0.118"
