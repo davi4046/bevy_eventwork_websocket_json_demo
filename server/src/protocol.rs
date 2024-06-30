@@ -1,35 +1,33 @@
-pub mod client_to_server {
-    use bevy_eventwork::NetworkMessage;
-    use serde::{Deserialize, Serialize};
+use bevy_eventwork::NetworkMessage;
+use serde::{Deserialize, Serialize};
 
-    // SpawnMessage
+// SpawnMessage
 
-    #[derive(Serialize, Deserialize, Clone, Debug)]
-    pub struct SpawnMessage {
-        pub player_name: String,
-    }
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct SpawnMessage {
+    pub player_name: String,
+}
 
-    impl NetworkMessage for SpawnMessage {
-        const NAME: &'static str = "balls_of_steel:SpawnMessage";
-    }
+impl NetworkMessage for SpawnMessage {
+    const NAME: &'static str = "balls_of_steel:SpawnMessage";
+}
 
-    // DespawnMessage
+// DespawnMessage
 
-    #[derive(Serialize, Deserialize, Clone, Debug)]
-    pub struct DespawnMessage;
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct DespawnMessage;
 
-    impl NetworkMessage for DespawnMessage {
-        const NAME: &'static str = "balls_of_steel:DespawnMessage";
-    }
+impl NetworkMessage for DespawnMessage {
+    const NAME: &'static str = "balls_of_steel:DespawnMessage";
+}
 
-    // ChatMessage
+// ChatMessage
 
-    #[derive(Serialize, Deserialize, Clone, Debug)]
-    pub struct ChatMessage {
-        pub message: String,
-    }
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct ChatMessage {
+    pub message: String,
+}
 
-    impl NetworkMessage for ChatMessage {
-        const NAME: &'static str = "balls_of_steel:ChatMessage";
-    }
+impl NetworkMessage for ChatMessage {
+    const NAME: &'static str = "balls_of_steel:ChatMessage";
 }

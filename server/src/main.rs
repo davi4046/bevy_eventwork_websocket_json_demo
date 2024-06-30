@@ -7,12 +7,11 @@ use bevy::{
 };
 use bevy_eventwork::{EventworkRuntime, Network, NetworkData, NetworkEvent};
 use bevy_eventwork_mod_websockets::{NetworkSettings, WebSocketProvider};
-use protocol::client_to_server::{ChatMessage, DespawnMessage, SpawnMessage};
+use protocol::{ChatMessage, DespawnMessage, SpawnMessage};
 use serializer::JsonSerializer;
 
 mod protocol;
 mod serializer;
-
 
 fn main() {
     use bevy_eventwork::AppNetworkMessage;
@@ -84,16 +83,17 @@ fn handle_connection_events(
     for event in network_events.read() {
         if let NetworkEvent::Connected(conn_id) = event {
             info!("User {} joined the server", conn_id.id);
-            net.broadcast(ChatMessage {
-                message: "hello".into(),
-            })
+            let _ = net.send_message(
+                *conn_id,
+                ChatMessage {
+                    message: "hello".into(),
+                },
+            );
         }
     }
 }
 
-fn handle_disconnect_events(
-    mut network_events: EventReader<NetworkEvent>,
-) {
+fn handle_disconnect_events(mut network_events: EventReader<NetworkEvent>) {
     for event in network_events.read() {
         if let NetworkEvent::Disconnected(conn_id) = event {
             info!("User {} left the server", conn_id.id)
@@ -101,9 +101,7 @@ fn handle_disconnect_events(
     }
 }
 
-fn handle_player_spawning(
-    mut spawn_messages: EventReader<NetworkData<SpawnMessage>>,
-) {
+fn handle_player_spawning(mut spawn_messages: EventReader<NetworkData<SpawnMessage>>) {
     for message in spawn_messages.read() {
         let conn_id = message.source();
         info!(
@@ -113,18 +111,14 @@ fn handle_player_spawning(
     }
 }
 
-fn handle_player_despawning(
-    mut despawn_messages: EventReader<NetworkData<DespawnMessage>>,
-) {
+fn handle_player_despawning(mut despawn_messages: EventReader<NetworkData<DespawnMessage>>) {
     for message in despawn_messages.read() {
         let conn_id = message.source();
         info!("User {} wants to be despawned", conn_id.id);
     }
 }
 
-fn handle_chat_messages(
-    mut chat_messages: EventReader<NetworkData<ChatMessage>>,
-) {
+fn handle_chat_messages(mut chat_messages: EventReader<NetworkData<ChatMessage>>) {
     for message in chat_messages.read() {
         let conn_id = message.source();
         info!("User {} says: {}", conn_id.id, message.message);
