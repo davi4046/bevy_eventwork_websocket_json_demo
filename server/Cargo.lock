@@ -416,6 +416,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "asynchronous-codec"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a860072022177f903e59730004fb5dc13db9275b79bb2aef7ba8ce831956c233"
+dependencies = [
+ "bytes",
+ "futures-sink",
+ "futures-util",
+ "memchr",
+ "pin-project-lite",
+]
+
+[[package]]
 name = "atomic-waker"
 version = "1.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -660,7 +673,7 @@ dependencies = [
 [[package]]
 name = "bevy_eventwork"
 version = "0.8.0"
-source = "git+https://github.com/NoahShomette/bevy_eventwork.git?branch=dynamic_serialization#0fbc76918636c2113a1e40baff874004882ca719"
+source = "git+https://github.com/NoahShomette/bevy_eventwork.git?branch=dynamic_serialization#40acb76203c1126b6a287a5e55a94dac01cbace9"
 dependencies = [
  "async-channel 2.3.1",
  "async-net",
@@ -675,13 +688,14 @@ dependencies = [
 [[package]]
 name = "bevy_eventwork_mod_websockets"
 version = "0.1.0"
-source = "git+https://github.com/NoahShomette/bevy_eventwork_mod_websockets.git?branch=dynamic_serialization#30af957e080cbb5a02b431662c649dee3e491971"
+source = "git+https://github.com/NoahShomette/bevy_eventwork_mod_websockets.git?branch=dynamic_serialization#8c1339e17dd4a6b18ba8003a79ed6cc4a9076a51"
 dependencies = [
  "async-channel 2.3.1",
  "async-std",
  "async-trait",
  "async-tungstenite",
  "async_io_stream",
+ "asynchronous-codec",
  "bevy",
  "bevy_eventwork",
  "bincode",
@@ -1411,9 +1425,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.0.103"
+version = "1.0.104"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2755ff20a1d93490d26ba33a6f092a38a508398a5320df5d4b3014fcccce9410"
+checksum = "74b6a57f98764a267ff415d50a25e6e166f3831a5071af4995296ea97d210490"
 dependencies = [
  "jobserver",
  "libc",
@@ -3487,9 +3501,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.119"
+version = "1.0.120"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e8eddb61f0697cc3989c5d64b452f5488e2b8a60fd7d5076a3045076ffef8cb0"
+checksum = "4e0d21c9a8cae1235ad58a00c11cb40d4b1e5c784f1ef2c537876ed6ffd8b7c5"
 dependencies = [
  "itoa",
  "ryu",
@@ -4679,18 +4693,18 @@ checksum = "791978798f0597cfc70478424c2b4fdc2b7a8024aaff78497ef00f24ef674193"
 
 [[package]]
 name = "zerocopy"
-version = "0.7.34"
+version = "0.7.35"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ae87e3fcd617500e5d106f0380cf7b77f3c6092aae37191433159dda23cfb087"
+checksum = "1b9b4fd18abc82b8136838da5d50bae7bdea537c574d8dc1a34ed098d6c166f0"
 dependencies = [
  "zerocopy-derive",
 ]
 
 [[package]]
 name = "zerocopy-derive"
-version = "0.7.34"
+version = "0.7.35"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "15e934569e47891f7d9411f1a451d947a60e000ab3bd24fbb970f000387d1b3b"
+checksum = "fa4f8080344d4671fb4e831a13ad1e68092748387dfc4f55e356242fae12ce3e"
 dependencies = [
  "proc-macro2",
  "quote",

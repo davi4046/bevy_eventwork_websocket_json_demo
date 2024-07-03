@@ -5,7 +5,10 @@ use bevy::{
     prelude::*,
     tasks::{TaskPool, TaskPoolBuilder},
 };
-use bevy_eventwork::{EventworkRuntime, Network, NetworkData, NetworkEvent};
+use bevy_eventwork::{
+    EventworkRuntime, Network, NetworkData, NetworkEvent, NetworkMessage, NetworkPacket,
+    NetworkSerializer,
+};
 use bevy_eventwork_mod_websockets::{NetworkSettings, WebSocketProvider};
 use protocol::{ChatMessage, DespawnMessage, SpawnMessage};
 use serializer::JsonSerializer;
@@ -72,6 +75,22 @@ fn setup_networking(
             panic!();
         }
     }
+    let network_packet = NetworkPacket {
+        kind: String::from(ChatMessage::NAME),
+        data: JsonSerializer::serialize(&ChatMessage {
+            message: "hello".into(),
+        })
+        .unwrap(),
+    };
+
+    let serialized = JsonSerializer::serialize(&network_packet).unwrap();
+
+    println!("Network Packet ::--:: {:?}", serialized);
+
+    println!(
+        "Network Packet ::--:: {:#?}",
+        JsonSerializer::deserialize::<NetworkPacket>(&serialized).unwrap()
+    );
 
     info!("Started listening for connections");
 }
