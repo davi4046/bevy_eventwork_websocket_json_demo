@@ -6,28 +6,22 @@ use bevy::{
     tasks::{TaskPool, TaskPoolBuilder},
 };
 use bevy_eventwork::{
-    EventworkRuntime, Network, NetworkData, NetworkEvent, NetworkMessage, NetworkPacket,
-    NetworkSerializer,
+    managers::{network::Network, NetworkInstance},
+    EventworkPlugin, EventworkRuntime, NetworkData, NetworkEvent,
 };
 use bevy_eventwork_mod_websockets::{NetworkSettings, WebSocketProvider};
 use protocol::{ChatMessage, DespawnMessage, SpawnMessage};
-use serializer::JsonSerializer;
+use serde_json::EventworkSerdeJsonAppExt;
 
 mod protocol;
-mod serializer;
+mod serde_json;
 
 fn main() {
-    use bevy_eventwork::AppNetworkMessage;
-
     let mut app = App::new();
 
     app.add_plugins((MinimalPlugins, LogPlugin::default()));
 
-    app.add_plugins(bevy_eventwork::EventworkPlugin::<
-        JsonSerializer,
-        WebSocketProvider,
-        bevy::tasks::TaskPool,
-    >::default());
+    app.add_plugins(EventworkPlugin::<WebSocketProvider, TaskPool>::default());
 
     app.insert_resource(EventworkRuntime(
         TaskPoolBuilder::new().num_threads(2).build(),
@@ -35,9 +29,9 @@ fn main() {
 
     app.insert_resource(NetworkSettings::default());
 
-    app.listen_for_message::<SpawnMessage, WebSocketProvider, JsonSerializer>();
-    app.listen_for_message::<DespawnMessage, WebSocketProvider, JsonSerializer>();
-    app.listen_for_message::<ChatMessage, WebSocketProvider, JsonSerializer>();
+    app.register_json_message::<SpawnMessage, WebSocketProvider>();
+    app.register_json_message::<DespawnMessage, WebSocketProvider>();
+    app.register_json_message::<ChatMessage, WebSocketProvider>();
 
     app.add_systems(Startup, setup_networking);
 
@@ -52,11 +46,11 @@ fn main() {
         ),
     );
 
-    app.run()
+    app.run();
 }
 
 fn setup_networking(
-    mut net: ResMut<Network<WebSocketProvider, JsonSerializer>>,
+    mut net: ResMut<NetworkInstance<WebSocketProvider>>,
     settings: Res<NetworkSettings>,
     task_pool: Res<EventworkRuntime<TaskPool>>,
 ) {
@@ -75,29 +69,13 @@ fn setup_networking(
             panic!();
         }
     }
-    let network_packet = NetworkPacket {
-        kind: String::from(ChatMessage::NAME),
-        data: JsonSerializer::serialize(&ChatMessage {
-            message: "hello".into(),
-        })
-        .unwrap(),
-    };
-
-    let serialized = JsonSerializer::serialize(&network_packet).unwrap();
-
-    println!("Network Packet ::--:: {:?}", serialized);
-
-    println!(
-        "Network Packet ::--:: {:#?}",
-        JsonSerializer::deserialize::<NetworkPacket>(&serialized).unwrap()
-    );
 
     info!("Started listening for connections");
 }
 
 fn handle_connection_events(
     mut network_events: EventReader<NetworkEvent>,
-    net: ResMut<Network<WebSocketProvider, JsonSerializer>>,
+    mut net: Network<WebSocketProvider>,
 ) {
     for event in network_events.read() {
         if let NetworkEvent::Connected(conn_id) = event {

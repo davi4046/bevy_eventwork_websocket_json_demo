@@ -5,8 +5,7 @@ const sendMessageButton = document.getElementById('send-message-button')!;
 const socket = new WebSocket('ws://localhost:8081');
 
 socket.addEventListener('message', async (event) => {
-    const blob = event.data as Blob;
-    console.log('Received message:', await blob.text());
+    console.log('Received message:', JSON.parse(event.data));
     // Server will say hello when we join
 });
 
